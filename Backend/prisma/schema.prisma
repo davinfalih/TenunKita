@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(BUYER)
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  carts    CartItem[]
+  orders   Order[]
+  payments Payment[]
+  ratings  Rating[]
+}
+
+enum Role {
+  ADMIN
+  BUYER
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  price         Float
+  stock         Int         @default(0)
+  imageUrl      String?
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id])
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  ratings       Rating[]
+  averageRating Float       @default(0)
+  totalReviews  Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  score     Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([userId])
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  totalAmount   Float
+  status        OrderStatus @default(PENDING)
+  orderItems    OrderItem[]
+  payment       Payment?
+  paymentProofs PaymentProof[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING              // Menunggu Pembayaran
+  WAITING_VERIFICATION // Bukti pembayaran diunggah, menunggu verifikasi
+  PAID                 // Dibayar & diverifikasi
+  PROCESSING           // Diproses
+  SHIPPED              // Dikirim
+  COMPLETED            // Selesai
+  REJECTED             // Pembayaran ditolak
+}
+
+model Payment {
+  id            Int         @id @default(autoincrement())
+  orderId       Int         @unique
+  order         Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  amount        Float
+  paymentMethod PaymentMethod @default(BANK_TRANSFER)
+  paymentStatus PaymentStatus @default(PENDING)
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+model PaymentProof {
+  id        Int              @id @default(autoincrement())
+  orderId   Int
+  order     Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fileUrl   String           // URL dari Cloudinary
+  status    PaymentProofStatus @default(PENDING)
+  adminNote String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([orderId])
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  E_WALLET
+  CASH
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REJECTED
+}
+
+enum PaymentProofStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
