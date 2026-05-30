@@ -12,9 +12,11 @@ export class RatingsService {
 
   async create(userId: number, data: any) {
     if (!data.productId) throw new BadRequestException('productId is required');
-    if (data.score == null) throw new BadRequestException('score is required');
-    if (data.score < 1 || data.score > 5)
-      throw new BadRequestException('score must be between 1 and 5');
+    
+    const score = data.rating != null ? data.rating : data.score;
+    if (score == null) throw new BadRequestException('rating or score is required');
+    if (score < 1 || score > 5)
+      throw new BadRequestException('rating must be between 1 and 5');
 
     const product = await this.prisma.product.findUnique({
       where: { id: Number(data.productId) },
@@ -39,7 +41,7 @@ export class RatingsService {
 
     const rating = await this.prisma.rating.create({
       data: {
-        score: Number(data.score),
+        score: Number(score),
         comment: data.comment || null,
         productId: Number(data.productId),
         userId: Number(userId),
@@ -86,14 +88,16 @@ export class RatingsService {
       throw new BadRequestException('You do not have permission to update this rating');
     }
 
-    if (data.score != null && (data.score < 1 || data.score > 5)) {
-      throw new BadRequestException('score must be between 1 and 5');
+    const newScore = data.rating != null ? data.rating : data.score;
+
+    if (newScore != null && (newScore < 1 || newScore > 5)) {
+      throw new BadRequestException('rating must be between 1 and 5');
     }
 
     const updatedRating = await this.prisma.rating.update({
       where: { id: Number(id) },
       data: {
-        score: data.score != null ? Number(data.score) : undefined,
+        score: newScore != null ? Number(newScore) : undefined,
         comment: data.comment !== undefined ? data.comment : undefined,
       },
     });

@@ -107,8 +107,7 @@ export class AuthService {
           role: user.role,
           address: user.address,
           createdAt: user.createdAt,
-        },
-        access_token: accessToken,
+        }
       },
     };
   }
