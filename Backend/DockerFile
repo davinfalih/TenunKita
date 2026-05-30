@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+RUN npm run build || (echo "BUILD FAILED" && cat /app/node_modules/.bin/nest && exit 1)
 
 EXPOSE 3000
 
