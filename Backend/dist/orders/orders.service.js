@@ -8,12 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const cart_service_1 = require("../cart/cart.service");
 const client_1 = require("@prisma/client");
+const pdfkit_1 = __importDefault(require("pdfkit"));
 let OrdersService = class OrdersService {
     constructor(prisma, cartService) {
         this.prisma = prisma;
@@ -148,6 +152,113 @@ let OrdersService = class OrdersService {
         });
         return this.prisma.order.delete({
             where: { id },
+        });
+    }
+    async generateReceiptPdf(userId, role, orderId) {
+        const order = await this.getOrderById(userId, role, orderId);
+        const formatRupiah = (value) => {
+            return 'Rp ' + value.toLocaleString('id-ID');
+        };
+        const formatDate = (date) => {
+            return new Intl.DateTimeFormat('id-ID', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+            }).format(date);
+        };
+        return new Promise((resolve, reject) => {
+            const doc = new pdfkit_1.default({ margin: 50, size: 'A4' });
+            const chunks = [];
+            doc.on('data', (chunk) => chunks.push(chunk));
+            doc.on('end', () => resolve(Buffer.concat(chunks)));
+            doc.on('error', (err) => reject(err));
+            const brandColor = '#4A2E1B';
+            const accentColor = '#D4AF37';
+            const textColor = '#2D3748';
+            const tableHeaderBg = '#4A2E1B';
+            doc.fillColor(brandColor)
+                .fontSize(24)
+                .font('Helvetica-Bold')
+                .text('TENUNKITA', { align: 'left' });
+            doc.fontSize(10)
+                .font('Helvetica-Oblique')
+                .fillColor('#718096')
+                .text('Sentuhan Tradisional, Kemewahan Modern', { align: 'left' });
+            doc.moveDown(0.5);
+            doc.strokeColor(accentColor)
+                .lineWidth(2)
+                .moveTo(50, doc.y)
+                .lineTo(545, doc.y)
+                .stroke();
+            doc.moveDown(1.5);
+            doc.fillColor(textColor)
+                .fontSize(16)
+                .font('Helvetica-Bold')
+                .text('STRUK PEMBAYARAN', { align: 'center' });
+            doc.moveDown(1.5);
+            const gridY = doc.y;
+            doc.fontSize(10)
+                .font('Helvetica-Bold')
+                .fillColor(brandColor)
+                .text('INFORMASI PESANAN', 50, gridY);
+            doc.font('Helvetica')
+                .fillColor(textColor);
+            doc.text(`No. Invoice: #TK-${order.id.toString().padStart(5, '0')}`, 50, gridY + 18);
+            doc.text(`Tanggal: ${formatDate(order.createdAt)}`, 50, gridY + 32);
+            doc.text(`Metode Bayar: ${order.payment?.paymentMethod || 'BANK_TRANSFER'}`, 50, gridY + 46);
+            doc.font('Helvetica-Bold')
+                .fillColor(brandColor)
+                .text('PELANGGAN', 320, gridY);
+            doc.font('Helvetica')
+                .fillColor(textColor);
+            doc.text(`Nama: ${order.user?.name || '-'}`, 320, gridY + 18);
+            doc.text(`Email: ${order.user?.email || '-'}`, 320, gridY + 32);
+            doc.text(`Status Pesanan: ${order.status}`, 320, gridY + 46);
+            doc.y = gridY + 80;
+            doc.moveDown(1.5);
+            const tableTop = doc.y;
+            doc.rect(50, tableTop, 495, 22).fill(tableHeaderBg);
+            doc.fillColor('#FFFFFF')
+                .font('Helvetica-Bold')
+                .fontSize(9);
+            doc.text('No', 60, tableTop + 6);
+            doc.text('Nama Produk', 90, tableTop + 6);
+            doc.text('Qty', 330, tableTop + 6, { width: 30, align: 'center' });
+            doc.text('Harga Satuan', 370, tableTop + 6, { width: 80, align: 'right' });
+            doc.text('Subtotal', 460, tableTop + 6, { width: 80, align: 'right' });
+            let currentY = tableTop + 22;
+            order.orderItems.forEach((item, index) => {
+                if (index % 2 === 1) {
+                    doc.rect(50, currentY, 495, 20).fill('#F7FAFC');
+                }
+                doc.fillColor(textColor)
+                    .font('Helvetica')
+                    .fontSize(9);
+                doc.text((index + 1).toString(), 60, currentY + 5);
+                doc.text(item.product.name, 90, currentY + 5, { width: 230, lineBreak: false });
+                doc.text(item.quantity.toString(), 330, currentY + 5, { width: 30, align: 'center' });
+                doc.text(formatRupiah(item.price), 370, currentY + 5, { width: 80, align: 'right' });
+                doc.text(formatRupiah(item.price * item.quantity), 460, currentY + 5, { width: 80, align: 'right' });
+                currentY += 20;
+            });
+            doc.strokeColor('#E2E8F0')
+                .lineWidth(1)
+                .moveTo(50, currentY)
+                .lineTo(545, currentY)
+                .stroke();
+            currentY += 10;
+            doc.fillColor(brandColor)
+                .font('Helvetica-Bold')
+                .fontSize(11);
+            doc.text('TOTAL BAYAR:', 280, currentY, { width: 160, align: 'right' });
+            doc.fillColor(accentColor)
+                .text(formatRupiah(order.totalAmount), 450, currentY, { width: 90, align: 'right' });
+            currentY += 50;
+            doc.fillColor('#718096')
+                .font('Helvetica-Oblique')
+                .fontSize(9);
+            doc.text('Terima kasih atas pembelian Anda!', 50, currentY, { align: 'center', width: 495 });
+            doc.text('Pesanan Anda membantu melestarikan warisan budaya tenun Indonesia.', 50, currentY + 15, { align: 'center', width: 495 });
+            doc.end();
         });
     }
 };

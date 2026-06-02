@@ -8,7 +8,9 @@ import {
   Request,
   UseGuards,
   Delete,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -99,5 +101,33 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Pesanan tidak ditemukan' })
   deleteOrder(@Request() req: any, @Param('id') id: string) {
     return this.ordersService.deleteOrder(id, req.user.sub, req.user.role);
+  }
+
+  // User/Admin: Cetak/Download Struk PDF
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'BUYER')
+  @Get(':id/receipt')
+  @ApiOperation({ summary: 'Cetak/Download Struk Pembayaran format PDF' })
+  @ApiParam({ name: 'id', description: 'ID pesanan', example: '1' })
+  @ApiResponse({ status: 200, description: 'File PDF berhasil di-generate' })
+  @ApiResponse({ status: 404, description: 'Pesanan tidak ditemukan' })
+  async getReceipt(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    const pdfBuffer = await this.ordersService.generateReceiptPdf(
+      req.user.sub,
+      req.user.role,
+      Number(id),
+    );
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="struk-pembayaran-TK-${id}.pdf"`,
+      'Content-Length': pdfBuffer.length.toString(),
+    });
+
+    res.end(pdfBuffer);
   }
 }

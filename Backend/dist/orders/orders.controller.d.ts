@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { OrdersService } from './orders.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 export declare class OrdersController {
@@ -145,4 +146,5 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.OrderStatus;
         totalAmount: number;
     }>;
+    getReceipt(req: any, id: string, res: Response): Promise<void>;
 }

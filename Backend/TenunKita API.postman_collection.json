@@ -589,6 +589,20 @@
             "description": "Hapus pesanan (Admin / Buyer)"
           },
           "response": []
+        },
+        {
+          "name": "Cetak Struk (Download PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/receipt",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}", "receipt"]
+            },
+            "description": "Mengunduh atau mencetak struk pesanan dengan format PDF resmi dari TenunKita."
+          },
+          "response": []
         }
       ]
     },

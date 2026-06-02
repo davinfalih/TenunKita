@@ -147,4 +147,5 @@ export declare class OrdersService {
         status: import(".prisma/client").$Enums.OrderStatus;
         totalAmount: number;
     }>;
+    generateReceiptPdf(userId: number, role: string, orderId: number): Promise<Buffer>;
 }

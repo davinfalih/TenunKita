@@ -42,6 +42,15 @@ let OrdersController = class OrdersController {
     deleteOrder(req, id) {
         return this.ordersService.deleteOrder(id, req.user.sub, req.user.role);
     }
+    async getReceipt(req, id, res) {
+        const pdfBuffer = await this.ordersService.generateReceiptPdf(req.user.sub, req.user.role, Number(id));
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `inline; filename="struk-pembayaran-TK-${id}.pdf"`,
+            'Content-Length': pdfBuffer.length.toString(),
+        });
+        res.end(pdfBuffer);
+    }
 };
 exports.OrdersController = OrdersController;
 __decorate([
@@ -124,6 +133,21 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "deleteOrder", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
+    (0, common_1.Get)(':id/receipt'),
+    (0, swagger_1.ApiOperation)({ summary: 'Cetak/Download Struk Pembayaran format PDF' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID pesanan', example: '1' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'File PDF berhasil di-generate' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Pesanan tidak ditemukan' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "getReceipt", null);
 exports.OrdersController = OrdersController = __decorate([
     (0, swagger_1.ApiTags)('orders'),
     (0, swagger_1.ApiBearerAuth)(),
