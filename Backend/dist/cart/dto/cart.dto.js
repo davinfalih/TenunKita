@@ -17,14 +17,21 @@ class AddToCartDto {
 }
 exports.AddToCartDto = AddToCartDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 1, description: 'ID produk yang akan ditambahkan ke keranjang' }),
+    (0, swagger_1.ApiProperty)({
+        example: 1,
+        description: 'ID produk yang akan ditambahkan ke keranjang',
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], AddToCartDto.prototype, "productId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 2, description: 'Jumlah produk yang akan ditambahkan', minimum: 1 }),
+    (0, swagger_1.ApiProperty)({
+        example: 2,
+        description: 'Jumlah produk yang akan ditambahkan',
+        minimum: 1,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(1),
@@ -35,7 +42,11 @@ class UpdateCartDto {
 }
 exports.UpdateCartDto = UpdateCartDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 3, description: 'Jumlah produk yang baru', minimum: 1 }),
+    (0, swagger_1.ApiProperty)({
+        example: 3,
+        description: 'Jumlah produk yang baru',
+        minimum: 1,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(1),

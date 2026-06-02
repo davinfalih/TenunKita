@@ -11,6 +11,7 @@ import { OrdersModule } from './orders/orders.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RatingsModule } from './ratings/ratings.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RatingsModule } from './ratings/ratings.module';
     PaymentModule,
     RatingsModule,
     PrismaModule,
+    ContactsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

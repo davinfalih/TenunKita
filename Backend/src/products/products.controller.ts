@@ -46,9 +46,16 @@ export class ProductsController {
     schema: {
       type: 'object',
       properties: {
-        image: { type: 'string', format: 'binary', description: 'Gambar produk' },
+        image: {
+          type: 'string',
+          format: 'binary',
+          description: 'Gambar produk',
+        },
         name: { type: 'string', example: 'Kain Tenun Ikat' },
-        description: { type: 'string', example: 'Kain tenun tradisional dari NTT' },
+        description: {
+          type: 'string',
+          example: 'Kain tenun tradisional dari NTT',
+        },
         price: { type: 'number', example: 250000 },
         stock: { type: 'number', example: 50 },
         categoryId: { type: 'string', example: '1' },
@@ -67,9 +74,21 @@ export class ProductsController {
 
   // Publik: Lihat semua produk (bisa filter & search)
   @Get()
-  @ApiOperation({ summary: 'Lihat semua produk (publik, bisa filter & search)' })
-  @ApiQuery({ name: 'search', required: false, description: 'Kata kunci pencarian nama produk', example: 'tenun' })
-  @ApiQuery({ name: 'categoryId', required: false, description: 'Filter berdasarkan ID kategori', example: '1' })
+  @ApiOperation({
+    summary: 'Lihat semua produk (publik, bisa filter & search)',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Kata kunci pencarian nama produk',
+    example: 'tenun',
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    required: false,
+    description: 'Filter berdasarkan ID kategori',
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Daftar produk berhasil diambil' })
   findAll(
     @Query('search') search?: string,
@@ -101,7 +120,11 @@ export class ProductsController {
     schema: {
       type: 'object',
       properties: {
-        image: { type: 'string', format: 'binary', description: 'Gambar produk baru (opsional)' },
+        image: {
+          type: 'string',
+          format: 'binary',
+          description: 'Gambar produk baru (opsional)',
+        },
         name: { type: 'string', example: 'Kain Tenun Ikat' },
         description: { type: 'string', example: 'Deskripsi produk diperbarui' },
         price: { type: 'number', example: 300000 },

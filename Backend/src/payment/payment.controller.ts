@@ -44,12 +44,19 @@ export class PaymentController {
     schema: {
       type: 'object',
       properties: {
-        file: { type: 'string', format: 'binary', description: 'File bukti pembayaran (gambar)' },
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'File bukti pembayaran (gambar)',
+        },
       },
       required: ['file'],
     },
   })
-  @ApiResponse({ status: 201, description: 'Bukti pembayaran berhasil diupload' })
+  @ApiResponse({
+    status: 201,
+    description: 'Bukti pembayaran berhasil diupload',
+  })
   @ApiResponse({ status: 400, description: 'File tidak ditemukan' })
   @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
   async uploadPaymentProof(

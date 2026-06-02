@@ -39,14 +39,19 @@ __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Buat rating/ulasan untuk produk yang sudah dibeli' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Buat rating/ulasan untuk produk yang sudah dibeli',
+    }),
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
             properties: {
                 productId: { type: 'number', example: 1 },
                 rating: { type: 'number', example: 5, minimum: 1, maximum: 5 },
-                comment: { type: 'string', example: 'Produk sangat bagus dan berkualitas!' },
+                comment: {
+                    type: 'string',
+                    example: 'Produk sangat bagus dan berkualitas!',
+                },
             },
             required: ['productId', 'rating'],
         },

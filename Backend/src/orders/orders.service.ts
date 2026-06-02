@@ -102,7 +102,11 @@ export class OrdersService {
   }
 
   // ─── LIHAT PESANAN BERDASARKAN ID ─────────────────────────────────────────
-  async getOrderById(userId: string | number, role: string, orderId: string | number) {
+  async getOrderById(
+    userId: string | number,
+    role: string,
+    orderId: string | number,
+  ) {
     const orderIdNumber = Number(orderId);
     const userIdNumber = Number(userId);
 
@@ -111,7 +115,9 @@ export class OrdersService {
       include: {
         user: { select: { name: true, email: true } },
         orderItems: {
-          include: { product: { select: { name: true, imageUrl: true, price: true } } },
+          include: {
+            product: { select: { name: true, imageUrl: true, price: true } },
+          },
         },
         payment: true,
         paymentProofs: true,
@@ -124,7 +130,9 @@ export class OrdersService {
 
     // Jika bukan admin dan pesanan ini bukan milik user yang login
     if (role !== 'ADMIN' && order.userId !== userIdNumber) {
-      throw new NotFoundException('Pesanan tidak ditemukan atau tidak ada akses');
+      throw new NotFoundException(
+        'Pesanan tidak ditemukan atau tidak ada akses',
+      );
     }
 
     return order;
@@ -157,7 +165,11 @@ export class OrdersService {
   }
 
   // ─── HAPUS PESANAN (ADMIN/BUYER) ──────────────────────────────────────────
-  async deleteOrder(orderId: string | number, userId: string | number, role: string) {
+  async deleteOrder(
+    orderId: string | number,
+    userId: string | number,
+    role: string,
+  ) {
     const id = Number(orderId);
     const userIdNumber = Number(userId);
 
@@ -170,7 +182,9 @@ export class OrdersService {
     }
 
     if (role !== 'ADMIN' && order.userId !== userIdNumber) {
-      throw new NotFoundException('Pesanan tidak ditemukan atau tidak ada akses');
+      throw new NotFoundException(
+        'Pesanan tidak ditemukan atau tidak ada akses',
+      );
     }
 
     // Hapus OrderItem terlebih dahulu karena tidak ada onCascade Delete di schema Prisma untuk ini

@@ -16,7 +16,10 @@ class LoginDto {
 }
 exports.LoginDto = LoginDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'budi@email.com', description: 'Alamat email terdaftar' }),
+    (0, swagger_1.ApiProperty)({
+        example: 'budi@email.com',
+        description: 'Alamat email terdaftar',
+    }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Email tidak boleh kosong' }),
     (0, class_validator_1.IsEmail)({}, { message: 'Format email tidak valid' }),
     __metadata("design:type", String)

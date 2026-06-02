@@ -40,6 +40,9 @@ let PaymentController = class PaymentController {
     async verifyPayment(id, verifyPaymentDto) {
         return this.paymentService.verifyPayment(id, verifyPaymentDto);
     }
+    async deletePayment(id) {
+        return this.paymentService.deletePayment(id);
+    }
 };
 exports.PaymentController = PaymentController;
 __decorate([
@@ -53,12 +56,19 @@ __decorate([
         schema: {
             type: 'object',
             properties: {
-                file: { type: 'string', format: 'binary', description: 'File bukti pembayaran (gambar)' },
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                    description: 'File bukti pembayaran (gambar)',
+                },
             },
             required: ['file'],
         },
     }),
-    (0, swagger_1.ApiResponse)({ status: 201, description: 'Bukti pembayaran berhasil diupload' }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'Bukti pembayaran berhasil diupload',
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'File tidak ditemukan' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Param)('orderId', common_1.ParseIntPipe)),
@@ -107,6 +117,20 @@ __decorate([
     __metadata("design:paramtypes", [Number, verify_payment_dto_1.VerifyPaymentDto]),
     __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "verifyPayment", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, swagger_1.ApiOperation)({ summary: '[ADMIN] Hapus pembayaran' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID pembayaran', example: 1 }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Pembayaran berhasil dihapus' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'Akses ditolak - bukan admin' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Pembayaran tidak ditemukan' }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], PaymentController.prototype, "deletePayment", null);
 exports.PaymentController = PaymentController = __decorate([
     (0, swagger_1.ApiTags)('payment'),
     (0, swagger_1.ApiBearerAuth)(),

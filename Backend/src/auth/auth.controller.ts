@@ -31,7 +31,10 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Login dan dapatkan JWT token' })
   @ApiBody({ type: LoginDto })
-  @ApiResponse({ status: 200, description: 'Login berhasil, token dikembalikan' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login berhasil, token dikembalikan',
+  })
   @ApiResponse({ status: 401, description: 'Email atau password salah' })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);

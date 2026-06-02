@@ -107,7 +107,7 @@ export class AuthService {
           role: user.role,
           address: user.address,
           createdAt: user.createdAt,
-        }
+        },
       },
     };
   }

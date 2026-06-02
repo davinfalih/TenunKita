@@ -23,13 +23,20 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: 'Kain tenun tradisional dari Nusa Tenggara Timur dengan motif khas', description: 'Deskripsi produk' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'Kain tenun tradisional dari Nusa Tenggara Timur dengan motif khas',
+        description: 'Deskripsi produk',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "description", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 250000, description: 'Harga produk dalam rupiah', minimum: 0 }),
+    (0, swagger_1.ApiProperty)({
+        example: 250000,
+        description: 'Harga produk dalam rupiah',
+        minimum: 0,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(0),

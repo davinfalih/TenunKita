@@ -55,9 +55,16 @@ __decorate([
         schema: {
             type: 'object',
             properties: {
-                image: { type: 'string', format: 'binary', description: 'Gambar produk' },
+                image: {
+                    type: 'string',
+                    format: 'binary',
+                    description: 'Gambar produk',
+                },
                 name: { type: 'string', example: 'Kain Tenun Ikat' },
-                description: { type: 'string', example: 'Kain tenun tradisional dari NTT' },
+                description: {
+                    type: 'string',
+                    example: 'Kain tenun tradisional dari NTT',
+                },
                 price: { type: 'number', example: 250000 },
                 stock: { type: 'number', example: 50 },
                 categoryId: { type: 'string', example: '1' },
@@ -75,9 +82,21 @@ __decorate([
 ], ProductsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Lihat semua produk (publik, bisa filter & search)' }),
-    (0, swagger_1.ApiQuery)({ name: 'search', required: false, description: 'Kata kunci pencarian nama produk', example: 'tenun' }),
-    (0, swagger_1.ApiQuery)({ name: 'categoryId', required: false, description: 'Filter berdasarkan ID kategori', example: '1' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Lihat semua produk (publik, bisa filter & search)',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'search',
+        required: false,
+        description: 'Kata kunci pencarian nama produk',
+        example: 'tenun',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'categoryId',
+        required: false,
+        description: 'Filter berdasarkan ID kategori',
+        example: '1',
+    }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Daftar produk berhasil diambil' }),
     __param(0, (0, common_1.Query)('search')),
     __param(1, (0, common_1.Query)('categoryId')),
@@ -109,7 +128,11 @@ __decorate([
         schema: {
             type: 'object',
             properties: {
-                image: { type: 'string', format: 'binary', description: 'Gambar produk baru (opsional)' },
+                image: {
+                    type: 'string',
+                    format: 'binary',
+                    description: 'Gambar produk baru (opsional)',
+                },
                 name: { type: 'string', example: 'Kain Tenun Ikat' },
                 description: { type: 'string', example: 'Deskripsi produk diperbarui' },
                 price: { type: 'number', example: 300000 },

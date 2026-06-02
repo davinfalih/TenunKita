@@ -7,7 +7,10 @@ export class CreateCategoryDto {
   @IsString()
   name: string;
 
-  @ApiPropertyOptional({ example: 'Kategori untuk semua jenis kain tenun tradisional', description: 'Deskripsi kategori' })
+  @ApiPropertyOptional({
+    example: 'Kategori untuk semua jenis kain tenun tradisional',
+    description: 'Deskripsi kategori',
+  })
   @IsOptional()
   @IsString()
   description?: string;

@@ -93,7 +93,9 @@ let OrdersService = class OrdersService {
             include: {
                 user: { select: { name: true, email: true } },
                 orderItems: {
-                    include: { product: { select: { name: true, imageUrl: true, price: true } } },
+                    include: {
+                        product: { select: { name: true, imageUrl: true, price: true } },
+                    },
                 },
                 payment: true,
                 paymentProofs: true,
@@ -127,6 +129,25 @@ let OrdersService = class OrdersService {
         return this.prisma.order.update({
             where: { id: orderIdNumber },
             data: { status: dto.status },
+        });
+    }
+    async deleteOrder(orderId, userId, role) {
+        const id = Number(orderId);
+        const userIdNumber = Number(userId);
+        const order = await this.prisma.order.findUnique({
+            where: { id },
+        });
+        if (!order) {
+            throw new common_1.NotFoundException('Pesanan tidak ditemukan');
+        }
+        if (role !== 'ADMIN' && order.userId !== userIdNumber) {
+            throw new common_1.NotFoundException('Pesanan tidak ditemukan atau tidak ada akses');
+        }
+        await this.prisma.orderItem.deleteMany({
+            where: { orderId: id },
+        });
+        return this.prisma.order.delete({
+            where: { id },
         });
     }
 };

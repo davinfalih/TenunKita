@@ -83,8 +83,8 @@ export declare class OrdersService {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            fileUrl: string;
             adminNote: string | null;
+            fileUrl: string;
         }[];
     } & {
         createdAt: Date;
@@ -132,6 +132,14 @@ export declare class OrdersService {
         totalAmount: number;
     })[]>;
     updateStatus(orderId: string | number, dto: UpdateOrderStatusDto): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        userId: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        totalAmount: number;
+    }>;
+    deleteOrder(orderId: string | number, userId: string | number, role: string): Promise<{
         createdAt: Date;
         updatedAt: Date;
         id: number;

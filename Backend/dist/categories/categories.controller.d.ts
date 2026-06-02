@@ -30,8 +30,8 @@ export declare class CategoriesController {
             id: number;
             price: number;
             stock: number;
-            imageUrl: string | null;
             categoryId: number;
+            imageUrl: string | null;
             averageRating: number;
             totalReviews: number;
         }[];

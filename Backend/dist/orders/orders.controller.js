@@ -39,6 +39,9 @@ let OrdersController = class OrdersController {
     updateStatus(id, dto) {
         return this.ordersService.updateStatus(id, dto);
     }
+    deleteOrder(req, id) {
+        return this.ordersService.deleteOrder(id, req.user.sub, req.user.role);
+    }
 };
 exports.OrdersController = OrdersController;
 __decorate([
@@ -106,6 +109,21 @@ __decorate([
     __metadata("design:paramtypes", [String, update_order_status_dto_1.UpdateOrderStatusDto]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "updateStatus", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
+    (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Hapus pesanan' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID pesanan', example: '1' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Pesanan berhasil dihapus' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'Akses ditolak' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Pesanan tidak ditemukan' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "deleteOrder", null);
 exports.OrdersController = OrdersController = __decorate([
     (0, swagger_1.ApiTags)('orders'),
     (0, swagger_1.ApiBearerAuth)(),

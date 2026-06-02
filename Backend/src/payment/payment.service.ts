@@ -76,7 +76,7 @@ export class PaymentService {
         'Order must be PENDING or WAITING_VERIFICATION before uploading proof',
       );
     }
-    
+
     const fileUrl = await this.uploadImage(file);
 
     const paymentProof = await this.prisma.paymentProof.create({

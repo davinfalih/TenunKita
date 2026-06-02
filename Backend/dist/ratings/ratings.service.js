@@ -75,7 +75,9 @@ let RatingsService = class RatingsService {
         });
     }
     async update(id, userId, userRole, data) {
-        const rating = await this.prisma.rating.findUnique({ where: { id: Number(id) } });
+        const rating = await this.prisma.rating.findUnique({
+            where: { id: Number(id) },
+        });
         if (!rating)
             throw new common_1.NotFoundException(`Rating with id ${id} not found`);
         if (rating.userId !== Number(userId) && userRole !== 'ADMIN') {
@@ -107,7 +109,9 @@ let RatingsService = class RatingsService {
         return updatedRating;
     }
     async remove(id, userId, userRole) {
-        const rating = await this.prisma.rating.findUnique({ where: { id: Number(id) } });
+        const rating = await this.prisma.rating.findUnique({
+            where: { id: Number(id) },
+        });
         if (!rating)
             throw new common_1.NotFoundException(`Rating with id ${id} not found`);
         if (rating.userId !== Number(userId) && userRole !== 'ADMIN') {

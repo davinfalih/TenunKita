@@ -12,9 +12,10 @@ export class RatingsService {
 
   async create(userId: number, data: any) {
     if (!data.productId) throw new BadRequestException('productId is required');
-    
+
     const score = data.rating != null ? data.rating : data.score;
-    if (score == null) throw new BadRequestException('rating or score is required');
+    if (score == null)
+      throw new BadRequestException('rating or score is required');
     if (score < 1 || score > 5)
       throw new BadRequestException('rating must be between 1 and 5');
 
@@ -81,11 +82,15 @@ export class RatingsService {
   }
 
   async update(id: number, userId: number, userRole: string, data: any) {
-    const rating = await this.prisma.rating.findUnique({ where: { id: Number(id) } });
+    const rating = await this.prisma.rating.findUnique({
+      where: { id: Number(id) },
+    });
     if (!rating) throw new NotFoundException(`Rating with id ${id} not found`);
 
     if (rating.userId !== Number(userId) && userRole !== 'ADMIN') {
-      throw new BadRequestException('You do not have permission to update this rating');
+      throw new BadRequestException(
+        'You do not have permission to update this rating',
+      );
     }
 
     const newScore = data.rating != null ? data.rating : data.score;
@@ -121,11 +126,15 @@ export class RatingsService {
   }
 
   async remove(id: number, userId: number, userRole: string) {
-    const rating = await this.prisma.rating.findUnique({ where: { id: Number(id) } });
+    const rating = await this.prisma.rating.findUnique({
+      where: { id: Number(id) },
+    });
     if (!rating) throw new NotFoundException(`Rating with id ${id} not found`);
 
     if (rating.userId !== Number(userId) && userRole !== 'ADMIN') {
-      throw new BadRequestException('You do not have permission to delete this rating');
+      throw new BadRequestException(
+        'You do not have permission to delete this rating',
+      );
     }
 
     await this.prisma.rating.delete({ where: { id: Number(id) } });

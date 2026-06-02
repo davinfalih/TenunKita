@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
@@ -8,12 +14,20 @@ export class CreateProductDto {
   @IsString()
   name: string;
 
-  @ApiPropertyOptional({ example: 'Kain tenun tradisional dari Nusa Tenggara Timur dengan motif khas', description: 'Deskripsi produk' })
+  @ApiPropertyOptional({
+    example:
+      'Kain tenun tradisional dari Nusa Tenggara Timur dengan motif khas',
+    description: 'Deskripsi produk',
+  })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 250000, description: 'Harga produk dalam rupiah', minimum: 0 })
+  @ApiProperty({
+    example: 250000,
+    description: 'Harga produk dalam rupiah',
+    minimum: 0,
+  })
   @IsNotEmpty()
   @IsNumber()
   @Min(0)

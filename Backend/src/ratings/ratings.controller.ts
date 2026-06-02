@@ -29,14 +29,19 @@ export class RatingsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Buat rating/ulasan untuk produk yang sudah dibeli' })
+  @ApiOperation({
+    summary: 'Buat rating/ulasan untuk produk yang sudah dibeli',
+  })
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
         productId: { type: 'number', example: 1 },
         rating: { type: 'number', example: 5, minimum: 1, maximum: 5 },
-        comment: { type: 'string', example: 'Produk sangat bagus dan berkualitas!' },
+        comment: {
+          type: 'string',
+          example: 'Produk sangat bagus dan berkualitas!',
+        },
       },
       required: ['productId', 'rating'],
     },

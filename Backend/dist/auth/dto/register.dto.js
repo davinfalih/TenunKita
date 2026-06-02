@@ -29,25 +29,39 @@ __decorate([
     __metadata("design:type", String)
 ], RegisterDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'password123', description: 'Password minimal 6 karakter', minLength: 6 }),
+    (0, swagger_1.ApiProperty)({
+        example: 'password123',
+        description: 'Password minimal 6 karakter',
+        minLength: 6,
+    }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Password tidak boleh kosong' }),
     (0, class_validator_1.MinLength)(6, { message: 'Password minimal 6 karakter' }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: 'Jl. Sudirman No.1, Jakarta', description: 'Alamat pengiriman' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'Jl. Sudirman No.1, Jakarta',
+        description: 'Alamat pengiriman',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "address", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ enum: client_1.Role, example: client_1.Role.BUYER, description: 'Role user (ADMIN/BUYER)' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        enum: client_1.Role,
+        example: client_1.Role.BUYER,
+        description: 'Role user (ADMIN/BUYER)',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(client_1.Role, { message: 'Role harus ADMIN atau BUYER' }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "role", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: 'AdminSecret123', description: 'Secret key untuk register admin' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'AdminSecret123',
+        description: 'Secret key untuk register admin',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

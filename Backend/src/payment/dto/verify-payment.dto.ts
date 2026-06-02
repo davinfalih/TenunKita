@@ -11,7 +11,10 @@ export class VerifyPaymentDto {
   @IsIn(['PENDING', 'APPROVED', 'REJECTED'])
   status: any;
 
-  @ApiPropertyOptional({ example: 'Pembayaran telah dikonfirmasi', description: 'Catatan admin' })
+  @ApiPropertyOptional({
+    example: 'Pembayaran telah dikonfirmasi',
+    description: 'Catatan admin',
+  })
   @IsOptional()
   @IsString()
   adminNote?: string;

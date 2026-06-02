@@ -130,6 +130,17 @@ let PaymentService = class PaymentService {
             data: updatedProof,
         };
     }
+    async deletePayment(id) {
+        const payment = await this.prisma.payment.findUnique({
+            where: { id },
+        });
+        if (!payment) {
+            throw new common_1.NotFoundException('Payment not found');
+        }
+        return this.prisma.payment.delete({
+            where: { id },
+        });
+    }
 };
 exports.PaymentService = PaymentService;
 exports.PaymentService = PaymentService = __decorate([

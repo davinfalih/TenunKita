@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
@@ -11,7 +16,9 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractToken(request);
 
     if (!token) {
-      throw new UnauthorizedException('Token tidak ditemukan, silakan login terlebih dahulu');
+      throw new UnauthorizedException(
+        'Token tidak ditemukan, silakan login terlebih dahulu',
+      );
     }
 
     try {
@@ -20,7 +27,9 @@ export class JwtAuthGuard implements CanActivate {
       });
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException('Token tidak valid atau sudah kadaluarsa');
+      throw new UnauthorizedException(
+        'Token tidak valid atau sudah kadaluarsa',
+      );
     }
 
     return true;

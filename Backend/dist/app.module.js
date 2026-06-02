@@ -20,6 +20,7 @@ const orders_module_1 = require("./orders/orders.module");
 const payment_module_1 = require("./payment/payment.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const ratings_module_1 = require("./ratings/ratings.module");
+const contacts_module_1 = require("./contacts/contacts.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
             payment_module_1.PaymentModule,
             ratings_module_1.RatingsModule,
             prisma_module_1.PrismaModule,
+            contacts_module_1.ContactsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

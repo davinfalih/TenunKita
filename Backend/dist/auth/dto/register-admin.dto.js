@@ -17,7 +17,10 @@ class RegisterAdminDto extends register_dto_1.RegisterDto {
 }
 exports.RegisterAdminDto = RegisterAdminDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'AdminSecret123', description: 'Secret key khusus untuk mendaftarkan admin' }),
+    (0, swagger_1.ApiProperty)({
+        example: 'AdminSecret123',
+        description: 'Secret key khusus untuk mendaftarkan admin',
+    }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Admin secret tidak boleh kosong' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

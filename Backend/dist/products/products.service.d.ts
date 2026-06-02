@@ -21,8 +21,8 @@ export declare class ProductsService {
         id: number;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
@@ -39,8 +39,8 @@ export declare class ProductsService {
         id: number;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     })[]>;
@@ -60,8 +60,8 @@ export declare class ProductsService {
         id: number;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
@@ -81,8 +81,8 @@ export declare class ProductsService {
         id: number;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
