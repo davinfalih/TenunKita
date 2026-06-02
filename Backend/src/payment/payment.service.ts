@@ -146,4 +146,18 @@ export class PaymentService {
       data: updatedProof,
     };
   }
+
+  async deletePayment(id: number) {
+    const payment = await this.prisma.payment.findUnique({
+      where: { id },
+    });
+
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+
+    return this.prisma.payment.delete({
+      where: { id },
+    });
+  }
 }

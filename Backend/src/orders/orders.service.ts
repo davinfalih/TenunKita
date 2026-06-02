@@ -155,4 +155,31 @@ export class OrdersService {
       data: { status: dto.status as OrderStatus },
     });
   }
+
+  // ─── HAPUS PESANAN (ADMIN/BUYER) ──────────────────────────────────────────
+  async deleteOrder(orderId: string | number, userId: string | number, role: string) {
+    const id = Number(orderId);
+    const userIdNumber = Number(userId);
+
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Pesanan tidak ditemukan');
+    }
+
+    if (role !== 'ADMIN' && order.userId !== userIdNumber) {
+      throw new NotFoundException('Pesanan tidak ditemukan atau tidak ada akses');
+    }
+
+    // Hapus OrderItem terlebih dahulu karena tidak ada onCascade Delete di schema Prisma untuk ini
+    await this.prisma.orderItem.deleteMany({
+      where: { orderId: id },
+    });
+
+    return this.prisma.order.delete({
+      where: { id },
+    });
+  }
 }

@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -95,5 +96,17 @@ export class PaymentController {
     @Body() verifyPaymentDto: VerifyPaymentDto,
   ) {
     return this.paymentService.verifyPayment(id, verifyPaymentDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '[ADMIN] Hapus pembayaran' })
+  @ApiParam({ name: 'id', description: 'ID pembayaran', example: 1 })
+  @ApiResponse({ status: 200, description: 'Pembayaran berhasil dihapus' })
+  @ApiResponse({ status: 403, description: 'Akses ditolak - bukan admin' })
+  @ApiResponse({ status: 404, description: 'Pembayaran tidak ditemukan' })
+  async deletePayment(@Param('id', ParseIntPipe) id: number) {
+    return this.paymentService.deletePayment(id);
   }
 }

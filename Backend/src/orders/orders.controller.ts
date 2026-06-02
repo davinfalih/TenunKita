@@ -7,6 +7,7 @@ import {
   Post,
   Request,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -85,5 +86,18 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Pesanan tidak ditemukan' })
   updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
     return this.ordersService.updateStatus(id, dto);
+  }
+
+  // Admin/Buyer: Hapus pesanan
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'BUYER')
+  @Delete(':id')
+  @ApiOperation({ summary: 'Hapus pesanan' })
+  @ApiParam({ name: 'id', description: 'ID pesanan', example: '1' })
+  @ApiResponse({ status: 200, description: 'Pesanan berhasil dihapus' })
+  @ApiResponse({ status: 403, description: 'Akses ditolak' })
+  @ApiResponse({ status: 404, description: 'Pesanan tidak ditemukan' })
+  deleteOrder(@Request() req: any, @Param('id') id: string) {
+    return this.ordersService.deleteOrder(id, req.user.sub, req.user.role);
   }
 }
