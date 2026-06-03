@@ -12,8 +12,8 @@ export declare class PaymentController {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            adminNote: string | null;
             fileUrl: string;
+            adminNote: string | null;
         };
     }>;
     getPaymentProof(orderId: number): Promise<{
@@ -22,8 +22,8 @@ export declare class PaymentController {
         id: number;
         status: import(".prisma/client").$Enums.PaymentProofStatus;
         orderId: number;
-        adminNote: string | null;
         fileUrl: string;
+        adminNote: string | null;
     }[]>;
     getBill(orderId: number): Promise<{
         orderId: number;
@@ -48,8 +48,8 @@ export declare class PaymentController {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            adminNote: string | null;
             fileUrl: string;
+            adminNote: string | null;
         };
     }>;
     deletePayment(id: number): Promise<{

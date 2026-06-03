@@ -20,8 +20,8 @@ export declare class ProductsController {
         id: number;
         price: number;
         stock: number;
-        categoryId: number;
         imageUrl: string | null;
+        categoryId: number;
         averageRating: number;
         totalReviews: number;
     }>;
@@ -38,8 +38,8 @@ export declare class ProductsController {
         id: number;
         price: number;
         stock: number;
-        categoryId: number;
         imageUrl: string | null;
+        categoryId: number;
         averageRating: number;
         totalReviews: number;
     })[]>;
@@ -59,8 +59,8 @@ export declare class ProductsController {
         id: number;
         price: number;
         stock: number;
-        categoryId: number;
         imageUrl: string | null;
+        categoryId: number;
         averageRating: number;
         totalReviews: number;
     }>;
@@ -80,8 +80,8 @@ export declare class ProductsController {
         id: number;
         price: number;
         stock: number;
-        categoryId: number;
         imageUrl: string | null;
+        categoryId: number;
         averageRating: number;
         totalReviews: number;
     }>;

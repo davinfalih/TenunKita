@@ -1,12 +1,16 @@
 import { Response } from 'express';
 import { OrdersService } from './orders.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { CheckoutDto } from './dto/checkout.dto';
 export declare class OrdersController {
     private readonly ordersService;
     constructor(ordersService: OrdersService);
-    checkout(req: any): Promise<{
+    checkout(req: any, dto: CheckoutDto): Promise<{
         message: string;
         orderId: number;
+        subtotal: number;
+        discountAmount: number;
+        promoCode: string;
         totalAmount: number;
         status: string;
         instruction: string;
@@ -22,6 +26,22 @@ export declare class OrdersController {
             paymentMethod: import(".prisma/client").$Enums.PaymentMethod;
             paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
             paidAt: Date | null;
+        };
+        promo: {
+            type: import(".prisma/client").$Enums.PromoType;
+            description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            code: string;
+            value: number;
+            maxDiscount: number | null;
+            minOrderAmount: number;
+            startDate: Date;
+            endDate: Date;
+            usageLimit: number | null;
+            isActive: boolean;
+            usedCount: number;
         };
         orderItems: ({
             product: {
@@ -43,7 +63,9 @@ export declare class OrdersController {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     })[]>;
     getOrderById(req: any, id: string): Promise<{
         user: {
@@ -60,6 +82,22 @@ export declare class OrdersController {
             paymentMethod: import(".prisma/client").$Enums.PaymentMethod;
             paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
             paidAt: Date | null;
+        };
+        promo: {
+            type: import(".prisma/client").$Enums.PromoType;
+            description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            code: string;
+            value: number;
+            maxDiscount: number | null;
+            minOrderAmount: number;
+            startDate: Date;
+            endDate: Date;
+            usageLimit: number | null;
+            isActive: boolean;
+            usedCount: number;
         };
         orderItems: ({
             product: {
@@ -82,8 +120,8 @@ export declare class OrdersController {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            adminNote: string | null;
             fileUrl: string;
+            adminNote: string | null;
         }[];
     } & {
         createdAt: Date;
@@ -91,7 +129,9 @@ export declare class OrdersController {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     }>;
     getAllOrders(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -128,7 +168,9 @@ export declare class OrdersController {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     })[]>;
     updateStatus(id: string, dto: UpdateOrderStatusDto): Promise<{
         createdAt: Date;
@@ -136,7 +178,9 @@ export declare class OrdersController {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     }>;
     deleteOrder(req: any, id: string): Promise<{
         createdAt: Date;
@@ -144,7 +188,9 @@ export declare class OrdersController {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     }>;
     getReceipt(req: any, id: string, res: Response): Promise<void>;
 }

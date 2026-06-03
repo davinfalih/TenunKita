@@ -1,13 +1,19 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CartService } from '../cart/cart.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { CheckoutDto } from './dto/checkout.dto';
+import { PromosService } from '../promos/promos.service';
 export declare class OrdersService {
     private prisma;
     private cartService;
-    constructor(prisma: PrismaService, cartService: CartService);
-    checkout(userId: string | number): Promise<{
+    private promosService;
+    constructor(prisma: PrismaService, cartService: CartService, promosService: PromosService);
+    checkout(userId: string | number, dto: CheckoutDto): Promise<{
         message: string;
         orderId: number;
+        subtotal: number;
+        discountAmount: number;
+        promoCode: string;
         totalAmount: number;
         status: string;
         instruction: string;
@@ -23,6 +29,22 @@ export declare class OrdersService {
             paymentMethod: import(".prisma/client").$Enums.PaymentMethod;
             paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
             paidAt: Date | null;
+        };
+        promo: {
+            type: import(".prisma/client").$Enums.PromoType;
+            description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            code: string;
+            value: number;
+            maxDiscount: number | null;
+            minOrderAmount: number;
+            startDate: Date;
+            endDate: Date;
+            usageLimit: number | null;
+            isActive: boolean;
+            usedCount: number;
         };
         orderItems: ({
             product: {
@@ -44,7 +66,9 @@ export declare class OrdersService {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     })[]>;
     getOrderById(userId: string | number, role: string, orderId: string | number): Promise<{
         user: {
@@ -61,6 +85,22 @@ export declare class OrdersService {
             paymentMethod: import(".prisma/client").$Enums.PaymentMethod;
             paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
             paidAt: Date | null;
+        };
+        promo: {
+            type: import(".prisma/client").$Enums.PromoType;
+            description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            code: string;
+            value: number;
+            maxDiscount: number | null;
+            minOrderAmount: number;
+            startDate: Date;
+            endDate: Date;
+            usageLimit: number | null;
+            isActive: boolean;
+            usedCount: number;
         };
         orderItems: ({
             product: {
@@ -83,8 +123,8 @@ export declare class OrdersService {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            adminNote: string | null;
             fileUrl: string;
+            adminNote: string | null;
         }[];
     } & {
         createdAt: Date;
@@ -92,7 +132,9 @@ export declare class OrdersService {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     }>;
     getAllOrders(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -129,7 +171,9 @@ export declare class OrdersService {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     })[]>;
     updateStatus(orderId: string | number, dto: UpdateOrderStatusDto): Promise<{
         createdAt: Date;
@@ -137,7 +181,9 @@ export declare class OrdersService {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     }>;
     deleteOrder(orderId: string | number, userId: string | number, role: string): Promise<{
         createdAt: Date;
@@ -145,7 +191,9 @@ export declare class OrdersService {
         id: number;
         userId: number;
         status: import(".prisma/client").$Enums.OrderStatus;
+        discountAmount: number;
         totalAmount: number;
+        promoId: number | null;
     }>;
     generateReceiptPdf(userId: number, role: string, orderId: number): Promise<Buffer>;
 }

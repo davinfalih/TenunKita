@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const orders_service_1 = require("./orders.service");
 const update_order_status_dto_1 = require("./dto/update-order-status.dto");
+const checkout_dto_1 = require("./dto/checkout.dto");
 const jwt_guard_1 = require("../auth/jwt.guard");
 const roles_guard_1 = require("../auth/roles.guard");
 const roles_decorator_1 = require("../auth/roles.decorator");
@@ -24,8 +25,8 @@ let OrdersController = class OrdersController {
     constructor(ordersService) {
         this.ordersService = ordersService;
     }
-    checkout(req) {
-        return this.ordersService.checkout(req.user.sub);
+    checkout(req, dto) {
+        return this.ordersService.checkout(req.user.sub, dto);
     }
     getMyOrders(req) {
         return this.ordersService.getMyOrders(req.user.sub);
@@ -58,12 +59,14 @@ __decorate([
     (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
     (0, common_1.Post)('checkout'),
     (0, swagger_1.ApiOperation)({ summary: 'Checkout - buat pesanan dari keranjang belanja' }),
+    (0, swagger_1.ApiBody)({ type: checkout_dto_1.CheckoutDto }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Pesanan berhasil dibuat' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Keranjang kosong atau stok habis' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, checkout_dto_1.CheckoutDto]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "checkout", null);
 __decorate([

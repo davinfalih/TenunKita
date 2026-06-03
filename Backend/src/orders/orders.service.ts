@@ -6,6 +6,8 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CartService } from '../cart/cart.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { CheckoutDto } from './dto/checkout.dto';
+import { PromosService } from '../promos/promos.service';
 import { OrderStatus } from '@prisma/client';
 import PDFDocument from 'pdfkit';
 
@@ -14,10 +16,11 @@ export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private cartService: CartService,
+    private promosService: PromosService,
   ) {}
 
   // ─── CHECKOUT ────────────────────────────────────────────────────────────────
-  async checkout(userId: string | number) {
+  async checkout(userId: string | number, dto: CheckoutDto) {
     const userIdNumber = Number(userId);
     const { items, subtotal } = await this.cartService.getCart(userIdNumber);
 
@@ -34,6 +37,19 @@ export class OrdersService {
       }
     }
 
+    let discountAmount = 0;
+    let promoId: number | null = null;
+    let promoCodeUsed = '';
+
+    if (dto.promoCode) {
+      const promoResult = await this.promosService.validatePromo(dto.promoCode, subtotal);
+      discountAmount = promoResult.discountAmount;
+      promoId = promoResult.promo.id;
+      promoCodeUsed = promoResult.promo.code;
+    }
+
+    const finalAmount = subtotal - discountAmount;
+
     const user = await this.prisma.user.findUnique({
       where: { id: userIdNumber },
     });
@@ -42,7 +58,9 @@ export class OrdersService {
     const order = await this.prisma.order.create({
       data: {
         userId: userIdNumber,
-        totalAmount: subtotal,
+        totalAmount: finalAmount,
+        discountAmount: discountAmount,
+        promoId: promoId,
         status: OrderStatus.PENDING,
         orderItems: {
           create: items.map((item) => ({
@@ -66,12 +84,20 @@ export class OrdersService {
     // Kosongkan keranjang
     await this.cartService.clearCart(userIdNumber);
 
+    // Update promo usedCount jika ada promo yang digunakan
+    if (promoId) {
+      await this.prisma.promo.update({
+        where: { id: promoId },
+        data: { usedCount: { increment: 1 } },
+      });
+    }
+
     // Buat Payment record dengan status PENDING
     await this.prisma.payment.create({
       data: {
         orderId: order.id,
         userId: userIdNumber,
-        amount: subtotal,
+        amount: finalAmount,
         paymentMethod: 'BANK_TRANSFER',
         paymentStatus: 'PENDING',
       },
@@ -80,7 +106,10 @@ export class OrdersService {
     return {
       message: 'Pesanan berhasil dibuat. Silakan upload bukti pembayaran.',
       orderId: order.id,
-      totalAmount: subtotal,
+      subtotal,
+      discountAmount,
+      promoCode: promoCodeUsed || null,
+      totalAmount: finalAmount,
       status: 'PENDING',
       instruction:
         'Gunakan endpoint POST /payment/upload-proof/:orderId untuk mengunggah bukti pembayaran',
@@ -97,6 +126,7 @@ export class OrdersService {
           include: { product: { select: { name: true, imageUrl: true } } },
         },
         payment: true,
+        promo: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -122,6 +152,7 @@ export class OrdersService {
         },
         payment: true,
         paymentProofs: true,
+        promo: true,
       },
     });
 
@@ -337,6 +368,30 @@ export class OrdersService {
       currentY += 10;
 
       // 5. Total Payment Summary
+      const calculatedSubtotal = order.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+      doc.fillColor(textColor)
+         .font('Helvetica')
+         .fontSize(9);
+
+      doc.text('Subtotal:', 280, currentY, { width: 160, align: 'right' });
+      doc.text(formatRupiah(calculatedSubtotal), 450, currentY, { width: 90, align: 'right' });
+      currentY += 16;
+
+      if (order.discountAmount > 0) {
+        doc.text(`Diskon (${order.promo?.code || 'Promo'}):`, 280, currentY, { width: 160, align: 'right' });
+        doc.text(`-${formatRupiah(order.discountAmount)}`, 450, currentY, { width: 90, align: 'right' });
+        currentY += 16;
+      }
+
+      // Draw a line before total
+      doc.strokeColor('#E2E8F0')
+         .lineWidth(0.5)
+         .moveTo(280, currentY)
+         .lineTo(540, currentY)
+         .stroke();
+      currentY += 6;
+
       doc.fillColor(brandColor)
          .font('Helvetica-Bold')
          .fontSize(11);

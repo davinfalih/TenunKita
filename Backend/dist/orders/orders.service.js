@@ -16,14 +16,16 @@ exports.OrdersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const cart_service_1 = require("../cart/cart.service");
+const promos_service_1 = require("../promos/promos.service");
 const client_1 = require("@prisma/client");
 const pdfkit_1 = __importDefault(require("pdfkit"));
 let OrdersService = class OrdersService {
-    constructor(prisma, cartService) {
+    constructor(prisma, cartService, promosService) {
         this.prisma = prisma;
         this.cartService = cartService;
+        this.promosService = promosService;
     }
-    async checkout(userId) {
+    async checkout(userId, dto) {
         const userIdNumber = Number(userId);
         const { items, subtotal } = await this.cartService.getCart(userIdNumber);
         if (items.length === 0) {
@@ -34,13 +36,25 @@ let OrdersService = class OrdersService {
                 throw new common_1.BadRequestException(`Stok produk "${item.product.name}" tidak mencukupi`);
             }
         }
+        let discountAmount = 0;
+        let promoId = null;
+        let promoCodeUsed = '';
+        if (dto.promoCode) {
+            const promoResult = await this.promosService.validatePromo(dto.promoCode, subtotal);
+            discountAmount = promoResult.discountAmount;
+            promoId = promoResult.promo.id;
+            promoCodeUsed = promoResult.promo.code;
+        }
+        const finalAmount = subtotal - discountAmount;
         const user = await this.prisma.user.findUnique({
             where: { id: userIdNumber },
         });
         const order = await this.prisma.order.create({
             data: {
                 userId: userIdNumber,
-                totalAmount: subtotal,
+                totalAmount: finalAmount,
+                discountAmount: discountAmount,
+                promoId: promoId,
                 status: client_1.OrderStatus.PENDING,
                 orderItems: {
                     create: items.map((item) => ({
@@ -59,11 +73,17 @@ let OrdersService = class OrdersService {
             });
         }
         await this.cartService.clearCart(userIdNumber);
+        if (promoId) {
+            await this.prisma.promo.update({
+                where: { id: promoId },
+                data: { usedCount: { increment: 1 } },
+            });
+        }
         await this.prisma.payment.create({
             data: {
                 orderId: order.id,
                 userId: userIdNumber,
-                amount: subtotal,
+                amount: finalAmount,
                 paymentMethod: 'BANK_TRANSFER',
                 paymentStatus: 'PENDING',
             },
@@ -71,7 +91,10 @@ let OrdersService = class OrdersService {
         return {
             message: 'Pesanan berhasil dibuat. Silakan upload bukti pembayaran.',
             orderId: order.id,
-            totalAmount: subtotal,
+            subtotal,
+            discountAmount,
+            promoCode: promoCodeUsed || null,
+            totalAmount: finalAmount,
             status: 'PENDING',
             instruction: 'Gunakan endpoint POST /payment/upload-proof/:orderId untuk mengunggah bukti pembayaran',
         };
@@ -85,6 +108,7 @@ let OrdersService = class OrdersService {
                     include: { product: { select: { name: true, imageUrl: true } } },
                 },
                 payment: true,
+                promo: true,
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -103,6 +127,7 @@ let OrdersService = class OrdersService {
                 },
                 payment: true,
                 paymentProofs: true,
+                promo: true,
             },
         });
         if (!order) {
@@ -246,6 +271,24 @@ let OrdersService = class OrdersService {
                 .lineTo(545, currentY)
                 .stroke();
             currentY += 10;
+            const calculatedSubtotal = order.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+            doc.fillColor(textColor)
+                .font('Helvetica')
+                .fontSize(9);
+            doc.text('Subtotal:', 280, currentY, { width: 160, align: 'right' });
+            doc.text(formatRupiah(calculatedSubtotal), 450, currentY, { width: 90, align: 'right' });
+            currentY += 16;
+            if (order.discountAmount > 0) {
+                doc.text(`Diskon (${order.promo?.code || 'Promo'}):`, 280, currentY, { width: 160, align: 'right' });
+                doc.text(`-${formatRupiah(order.discountAmount)}`, 450, currentY, { width: 90, align: 'right' });
+                currentY += 16;
+            }
+            doc.strokeColor('#E2E8F0')
+                .lineWidth(0.5)
+                .moveTo(280, currentY)
+                .lineTo(540, currentY)
+                .stroke();
+            currentY += 6;
             doc.fillColor(brandColor)
                 .font('Helvetica-Bold')
                 .fontSize(11);
@@ -266,6 +309,7 @@ exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        cart_service_1.CartService])
+        cart_service_1.CartService,
+        promos_service_1.PromosService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

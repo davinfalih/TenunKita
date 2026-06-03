@@ -6,20 +6,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrdersModule = void 0;
+exports.PromosModule = void 0;
 const common_1 = require("@nestjs/common");
-const orders_controller_1 = require("./orders.controller");
-const orders_service_1 = require("./orders.service");
-const cart_module_1 = require("../cart/cart.module");
-const promos_module_1 = require("../promos/promos.module");
-let OrdersModule = class OrdersModule {
+const promos_service_1 = require("./promos.service");
+const promos_controller_1 = require("./promos.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
+let PromosModule = class PromosModule {
 };
-exports.OrdersModule = OrdersModule;
-exports.OrdersModule = OrdersModule = __decorate([
+exports.PromosModule = PromosModule;
+exports.PromosModule = PromosModule = __decorate([
     (0, common_1.Module)({
-        imports: [cart_module_1.CartModule, promos_module_1.PromosModule],
-        controllers: [orders_controller_1.OrdersController],
-        providers: [orders_service_1.OrdersService],
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [promos_controller_1.PromosController],
+        providers: [promos_service_1.PromosService],
+        exports: [promos_service_1.PromosService],
     })
-], OrdersModule);
-//# sourceMappingURL=orders.module.js.map
+], PromosModule);
+//# sourceMappingURL=promos.module.js.map

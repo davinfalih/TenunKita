@@ -12,8 +12,8 @@ export declare class CartService {
             id: number;
             price: number;
             stock: number;
-            categoryId: number;
             imageUrl: string | null;
+            categoryId: number;
             averageRating: number;
             totalReviews: number;
         };
@@ -39,8 +39,8 @@ export declare class CartService {
                 id: number;
                 price: number;
                 stock: number;
-                categoryId: number;
                 imageUrl: string | null;
+                categoryId: number;
                 averageRating: number;
                 totalReviews: number;
             };
@@ -63,8 +63,8 @@ export declare class CartService {
             id: number;
             price: number;
             stock: number;
-            categoryId: number;
             imageUrl: string | null;
+            categoryId: number;
             averageRating: number;
             totalReviews: number;
         };

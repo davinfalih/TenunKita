@@ -27,8 +27,8 @@ export declare class PaymentService {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            adminNote: string | null;
             fileUrl: string;
+            adminNote: string | null;
         };
     }>;
     getPaymentProof(orderId: number): Promise<{
@@ -37,8 +37,8 @@ export declare class PaymentService {
         id: number;
         status: import(".prisma/client").$Enums.PaymentProofStatus;
         orderId: number;
-        adminNote: string | null;
         fileUrl: string;
+        adminNote: string | null;
     }[]>;
     verifyPayment(paymentProofId: number, verifyDto: VerifyPaymentDto): Promise<{
         success: boolean;
@@ -49,8 +49,8 @@ export declare class PaymentService {
             id: number;
             status: import(".prisma/client").$Enums.PaymentProofStatus;
             orderId: number;
-            adminNote: string | null;
             fileUrl: string;
+            adminNote: string | null;
         };
     }>;
     deletePayment(id: number): Promise<{

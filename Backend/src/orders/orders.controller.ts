@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { CheckoutDto } from './dto/checkout.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -31,16 +32,16 @@ import { Roles } from '../auth/roles.decorator';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  // User: Checkout dari keranjang
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN', 'BUYER')
   @Post('checkout')
   @ApiOperation({ summary: 'Checkout - buat pesanan dari keranjang belanja' })
+  @ApiBody({ type: CheckoutDto })
   @ApiResponse({ status: 201, description: 'Pesanan berhasil dibuat' })
   @ApiResponse({ status: 400, description: 'Keranjang kosong atau stok habis' })
   @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
-  checkout(@Request() req: any) {
-    return this.ordersService.checkout(req.user.sub);
+  checkout(@Request() req: any, @Body() dto: CheckoutDto) {
+    return this.ordersService.checkout(req.user.sub, dto);
   }
 
   // User: Lihat pesanan saya
